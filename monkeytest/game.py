@@ -41,7 +41,6 @@ class typeGame:
                 self.wLetter += 1
             self.r2 += 1
             return True
-        #print("sen :",self.currSen)
         return False
 
     #Update string when deleting last char
@@ -62,8 +61,6 @@ class typeGame:
                 self.wLetter -= 1
             self.currWord = self.currWord[:-1]
             self.currSen[self.r1] = self.currSen[self.r1][:-1]
-
-        #print("sen :",self.currSen)
         return 8
 
     #Check if word submited is valid or not

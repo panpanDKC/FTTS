@@ -43,20 +43,23 @@ class MainWindow(QWidget):
                                       border-width: 2px; 
                                       border-color: #fff0b8;
                                       border-radius: 3px""")
+
         #Indicate user how to switch game mode
         self.indic = QLabel(self)
         self.indic.setFont(QFont('Andale Mono',10))
         self.indic.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.indic.setGeometry(460,35,280,30)
         self.indic.setText("Press Shift + Backspace to change")
-        
+       
+        #Choose game mode based on 'mode' bool
         if mode:
             self.ty_game = typeGameNum(path, 10)
             self.chooseGame.setText("You are playing Normal Mode")
         else:
             self.ty_game = typeGameTime(path, 60)
             self.chooseGame.setText("You are playing Time Mode")
-
+        
+        #Shortcut for game's stats
         self.stats = self.ty_game.stats
 
         #---- Stats text area ----
@@ -90,12 +93,14 @@ class MainWindow(QWidget):
         self.test.setAlignment(Qt.AlignmentFlag.AlignCenter)
         
         #Statistic label
+        #Word per minutes
         self.wpm = QLabel(self)
         self.wpm.setFont(QFont('Andale Mono',20))
         self.wpm.setText(str(self.ty_game.wpm)+"wpm")
         self.wpm.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.wpm.setGeometry(410,280,120,70)
 
+        #Accuracy
         self.accu = QLabel(self)
         self.accu.setFont(QFont('Andale Mono',20))
         self.accu.setText('⌖'+str(self.ty_game.accu)+'%')
@@ -113,7 +118,7 @@ class MainWindow(QWidget):
         self.cursor_timer = QTimer()
         self.cursor_timer.timeout.connect(self.cursorBlink)
         self.cursor_timer.start(500)
-        self.lastP = 0
+        self.lastP = 0 #Last postion of cursor before spacing
         
         #Initialize timer and timer's label
         self.time = QLabel(self)
@@ -150,12 +155,14 @@ class MainWindow(QWidget):
         k = event.key()
         if k == Qt.Key.Key_Shift:
             self.shiftT = True
-
+        
+        #Check if user want to restart game
         if self.shiftT and k == Qt.Key.Key_Return:
             self.w = MainWindow(self.gameMode)
             self.w.show()
             self.close()
 
+        #Check if user want to change game mode
         if self.shiftT and k == Qt.Key.Key_Backspace:
             self.w = MainWindow(not self.gameMode)
             self.w.show()
@@ -172,11 +179,13 @@ class MainWindow(QWidget):
 
         x,y = self.cursor.x(),self.cursor.y()
 
-
         #Check what key is pressed
         if k == Qt.Key.Key_Space:
+            #Extra spaceing for cursor if word not fully written
             if self.ty_game.rd_textL[self.ty_game.r1] != self.ty_game.currWord:
-                x += (len(self.ty_game.rd_textL[self.ty_game.r1])-len(self.ty_game.currWord)) * 8
+                x += ((len(self.ty_game.rd_textL[self.ty_game.r1])
+                       - len(self.ty_game.currWord)) * 8)
+            #Check if cursor needs to go down
             if x >= self.rect.right():
                 self.lastP = x
                 x = int(self.rect.left())+7
@@ -184,33 +193,34 @@ class MainWindow(QWidget):
             
             self.ty_game.updatePtrText(' ')
             self.cursor.move(x+9,y)
-            #self.cursorAnim(x+9,y)
-
+        
+        #Check if user want to erase last char
         elif k == Qt.Key.Key_Backspace:
             if x < self.rect.left()+18:
                 x = self.lastP+8
                 y -= 14
             x -= self.ty_game.delLastPtrText()
             self.cursor.move(x,y)
-            #self.cursorAnim(x,y)
 
+        #Check if user input is a char
         elif (k >= 65 and k <= 90):#Looking for char
             ch = chr(k + 32 * (not self.shiftT))
             if self.ty_game.updatePtrText(ch):
                 self.cursor.move(x+8,y)
-                #self.cursorAnim(x+8,y)
-
+        
+        #Check if user input is punctuation
         elif k in [44,46,33,63]:#Looking for [',','.','!','?']
             if self.ty_game.updatePtrText(chr(k)):
                 self.cursor.move(x+8,y)
-                #self.cursorAnim(x+8,y)
         self.test.setText(self.ty_game.currSen)
-
+    
+    #Catch when Shift key is released
     def keyReleaseEvent(self, event):
         k = event.key()
         if k == Qt.Key.Key_Shift:
             self.shiftT = False
-    
+   
+    #Update stats labels
     def updTime(self):
         self.time.setText(str(self.ty_game.time)+"s")
         self.ty_game.computeStats()
@@ -222,10 +232,12 @@ class MainWindow(QWidget):
         acc_out = acc_format + '⌖' + str(acc) + '%' + "</span>"
         self.wpm.setText(wpm_out)
         self.accu.setText(acc_out)
-
+    
+    #Update main text label
     def updDispText():
         self.test.setText()
-
+    
+    #Center main text rect
     def centerRect(self):
         # Get the size of the widget
         wi = self.width()
@@ -235,18 +247,12 @@ class MainWindow(QWidget):
         
         self.rect.moveTo(x-(self.rect.width()/2),
                          y-(self.rect.height()/2)+70)
-
+    
+    #Make cursor blinking
     def cursorBlink(self):
         self.cursor.setVisible(not self.cursor.isVisible())
 
-    def cursorAnim(self,x,y):
-        self.animation = QPropertyAnimation(self.cursor,b"pos")
-        self.animation.setDuration(50)
-        self.animation.setStartValue(QPoint(self.cursor.x(),
-                                            self.cursor.y()))
-        self.animation.setEndValue(QPoint(x,y))
-        self.animation.start()
-
+#Define stats color based on arguments
 def defineColor(topB, midB, var):
     if var >= topB:
         return "<span style='color:rgb(115,255,100)'>"
