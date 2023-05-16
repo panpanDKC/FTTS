@@ -77,15 +77,6 @@ class typeGame:
         self.is_launched = True
         self.timer.start(100)
 
-    def degubPrint(self):
-        print('------------')
-        print(self.rd_textL)
-        print("currWord:",self.currWord)
-        print("index 1:",self.r1)
-        print("index 2:",self.r2)
-        print("validated:",self.validW)
-        print('------------')
-
 #Game class limited by number of word that inherit from typeGame
 class typeGameNum(typeGame):
     def __init__(self,path,n):
@@ -108,6 +99,7 @@ class typeGameNum(typeGame):
             self.wpm = round(self.validW*100/self.time,1)
         
         total_len = 1
+
         for w in self.currSen: 
             total_len+=len(w)
         if total_len <= 0:
