@@ -94,16 +94,15 @@ class typeGameNum(typeGame):
 
     def computeStats(self):
         if self.time == 0:
-            self.wpm = round(self.validW,2)
+            self.wpm = round(self.validW,1)
         else:
             self.wpm = round(self.validW*100/self.time,1)
         
-        total_len = 1
-
+        total_len = 0
         for w in self.currSen: 
             total_len+=len(w)
         if total_len <= 0:
-            self.accu = round(0,2)
+            self.accu = round(0,1)
         else:
             self.accu=round((total_len-self.wLetter)*100/total_len,1)
 
@@ -117,7 +116,6 @@ class typeGameTime(typeGame):
 
     def updateTimer(self):
         self.time = round(self.time - 0.1,1)
-        print(self.wpm)
         if self.time <= 0:
             self.end = True
             self.timer.stop()
@@ -127,9 +125,13 @@ class typeGameTime(typeGame):
 
     def computeStats(self):
         if self.time == 0:
-            self.wpm = round(self.validW,2)
+            self.wpm = round(self.validW*100/self.setted_time,2)
         else:
-            self.wpm = round(self.validW*100/(0-self.time),1)
+            val = self.setted_time-self.time
+            if val == 0:
+                self.wpm = round(0,1)
+            else:
+                self.wpm = round(self.validW*100/val,1)
 
         total_len = 1
         for w in self.currSen: 

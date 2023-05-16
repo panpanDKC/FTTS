@@ -4,7 +4,6 @@ from PyQt6.QtGui import QKeySequence, QPalette, QLinearGradient, QColor, QPixmap
 from PyQt6.QtCore import Qt, QTimer, QRectF, QPropertyAnimation, QPoint
 from PyQt6.QtGui import *
 from PyQt6 import QtQuick
-from tools import *
 from colorLet import *
 from game import *
 
@@ -16,7 +15,7 @@ styleS = """border-style: solid;
             border-radius: 3px"""
 
 class MainWindow(QWidget):
-    def __init__(self):
+    def __init__(self,mode):
         super().__init__()
         
         #Initialize window and game
@@ -27,16 +26,37 @@ class MainWindow(QWidget):
         self.setFixedSize(self.wi,self.he)
 
         gradient = QLinearGradient(200, 
-                                   0, 
-                                   self.width()-200, 
-                                   self.height())
+                            0, self.width()-200, self.height())
         gradient.setColorAt(0, QColor(255, 163, 77))
         gradient.setColorAt(1, QColor(255, 222, 100))
         pal = QPalette()
         pal.setBrush(QPalette.ColorRole.Window, gradient)
         self.setPalette(pal)
+        
+        #Initalize game mode bool and mode label
+        self.chooseGame = QLabel(self)
+        self.chooseGame.setFont(QFont('Andale Mono',15))
+        self.chooseGame.setGeometry(460,10,280,30)
+        self.chooseGame.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.gameMode = mode
+        self.chooseGame.setStyleSheet("""border-style: solid; 
+                                      border-width: 2px; 
+                                      border-color: #fff0b8;
+                                      border-radius: 3px""")
+        #Indicate user how to switch game mode
+        self.indic = QLabel(self)
+        self.indic.setFont(QFont('Andale Mono',10))
+        self.indic.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.indic.setGeometry(460,35,280,30)
+        self.indic.setText("Press Shift + Backspace to change")
+        
+        if mode:
+            self.ty_game = typeGameNum(path, 10)
+            self.chooseGame.setText("You are playing Normal Mode")
+        else:
+            self.ty_game = typeGameTime(path, 60)
+            self.chooseGame.setText("You are playing Time Mode")
 
-        self.ty_game = typeGameNum(path, 10)
         self.stats = self.ty_game.stats
 
         #---- Stats text area ----
@@ -132,7 +152,12 @@ class MainWindow(QWidget):
             self.shiftT = True
 
         if self.shiftT and k == Qt.Key.Key_Return:
-            self.w = MainWindow()
+            self.w = MainWindow(self.gameMode)
+            self.w.show()
+            self.close()
+
+        if self.shiftT and k == Qt.Key.Key_Backspace:
+            self.w = MainWindow(not self.gameMode)
             self.w.show()
             self.close()
 
@@ -229,9 +254,8 @@ def defineColor(topB, midB, var):
         return "<span style='color:rgb(255,155,100)'>"
     return "<span style='color:rgb(255,88,100)'>"
 
-
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    win = MainWindow()
+    win = MainWindow(True)
     win.show()
     sys.exit(app.exec())
