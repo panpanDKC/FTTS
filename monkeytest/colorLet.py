@@ -35,7 +35,8 @@ class ColoredLabel(QLabel):
                 size = self.rect.left()
 
             for j in range(len(self.twri[i])):
-                color = QColor("white")
+                grey = 255
+                color = QColor(grey, grey, grey)
                 ch = self.twri[i][j]
 
                 #Check whether the char is good or not

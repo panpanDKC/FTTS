@@ -93,7 +93,7 @@ class typeGameNum(typeGame):
         if self.time == 0:
             self.wpm = round(self.validW,1)
         else:
-            self.wpm = round(self.validW*100/self.time,1)
+            self.wpm = round(self.validW/(self.time/60),1)
         
         total_len = 0
         for w in self.currSen: 
@@ -122,13 +122,13 @@ class typeGameTime(typeGame):
 
     def computeStats(self):
         if self.time == 0:
-            self.wpm = round(self.validW*100/self.setted_time,2)
+            self.wpm = round(self.validW/(self.setted_time/60),2)
         else:
-            val = self.setted_time-self.time
+            val = (self.setted_time-self.time)/60
             if val == 0:
                 self.wpm = round(0,1)
             else:
-                self.wpm = round(self.validW*100/val,1)
+                self.wpm = round(self.validW/val,1)
 
         total_len = 1
         for w in self.currSen: 

@@ -14,8 +14,11 @@ styleS = """border-style: solid;
             border-color: #fff0b8;
             border-radius: 3px"""
 
+ListWord = [30,60,100]
+ListTime = [30,60,90]
+
 class MainWindow(QWidget):
-    def __init__(self,mode):
+    def __init__(self,mode,ind):
         super().__init__()
         
         #Initialize window and game
@@ -43,21 +46,46 @@ class MainWindow(QWidget):
                                       border-width: 2px; 
                                       border-color: #fff0b8;
                                       border-radius: 3px""")
+        self.ListInd = ind
+        self.List = QLabel(self)        
+        self.List.setFont(QFont('Andale Mono',18))
+        self.List.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        self.List.setGeometry(450,560,350,30)
+
+        rect_select = QLabel(self)
+        rect_select.setGeometry(565+self.ListInd*43,556,30,30)
+        rect_select.setStyleSheet("""
+                                  border-style: solid;
+                                  border-width: 2px;
+                                  border-color: #fff0b8;
+                                  border-radius: 3px
+                                  """)
+
+        #Indicate user how to choose game length
+        self.indicA = QLabel(self)
+        self.indicA.setFont(QFont('Andale Mono',10))
+        self.indicA.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.indicA.setGeometry(460,530,280,30)
+        self.indicA.setText("Use ◀ or ▶ to select")
 
         #Indicate user how to switch game mode
-        self.indic = QLabel(self)
-        self.indic.setFont(QFont('Andale Mono',10))
-        self.indic.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.indic.setGeometry(460,35,280,30)
-        self.indic.setText("Press Shift + Backspace to change")
+        self.indicB = QLabel(self)
+        self.indicB.setFont(QFont('Andale Mono',10))
+        self.indicB.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.indicB.setGeometry(460,35,280,30)
+        self.indicB.setText("Press Shift + Backspace to change")
        
         #Choose game mode based on 'mode' bool
         if mode:
-            self.ty_game = typeGameNum(path, 10)
+            self.ty_game = typeGameNum(path, ListWord[self.ListInd])
             self.chooseGame.setText("You are playing Normal Mode")
+            self.List.setText("How long ? 30  60  100 words")
+            if self.ListInd == 2:
+                rect_select.setGeometry(565+self.ListInd*43,556,42,30)
         else:
-            self.ty_game = typeGameTime(path, 60)
+            self.ty_game = typeGameTime(path, ListTime[self.ListInd])
             self.chooseGame.setText("You are playing Time Mode")
+            self.List.setText("How long ? 30  60  90 seconds")
         
         #Shortcut for game's stats
         self.stats = self.ty_game.stats
@@ -158,15 +186,31 @@ class MainWindow(QWidget):
         
         #Check if user want to restart game
         if self.shiftT and k == Qt.Key.Key_Return:
-            self.w = MainWindow(self.gameMode)
+            self.w = MainWindow(self.gameMode, self.ListInd)
             self.w.show()
             self.close()
 
         #Check if user want to change game mode
         if self.shiftT and k == Qt.Key.Key_Backspace:
-            self.w = MainWindow(not self.gameMode)
+            self.w = MainWindow(not self.gameMode, 0)
             self.w.show()
             self.close()
+
+        if k == Qt.Key.Key_Left:
+            if self.ListInd > 0:
+                self.w = MainWindow(self.gameMode, self.ListInd - 1)
+                self.w.show()
+                self.close()
+            else:
+                return
+
+        if k == Qt.Key.Key_Right:
+            if self.ListInd < 2:
+                self.w = MainWindow(self.gameMode, self.ListInd + 1)
+                self.w.show()
+                self.close()
+            else:
+                return
 
         #Check if game is done
         if self.ty_game.end:
@@ -262,6 +306,6 @@ def defineColor(topB, midB, var):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    win = MainWindow(True)
+    win = MainWindow(True, 0)
     win.show()
     sys.exit(app.exec())
