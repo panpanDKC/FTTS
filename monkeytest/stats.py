@@ -39,7 +39,6 @@ class stats:
         self.averageWPM = round((self.total_train * self.averageWPM + wpm) / (self.total_train + 1),2)
         self.total_train += 1
         self.time_spent = datetime.strptime(str(self.time_spent), '%H:%M:%S') + timedelta(seconds = time)
-        print(type(self.time_spent))
 
     def resetStats(self):
         self.averageWPM = 0.0
