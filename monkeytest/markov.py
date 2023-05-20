@@ -113,7 +113,7 @@ def SaveBank(bank, name):
     encrypt(res.encode('utf-8'),name)
 
 def LoadBank(name):
-    data = decrypt(name)
+    data = decrypt()
     res = json.loads(data)
     return res
     

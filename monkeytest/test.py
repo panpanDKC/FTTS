@@ -28,15 +28,12 @@ class MainWindow(QWidget):
         self.he = 600
         self.setFixedSize(self.wi,self.he)
 
-        '''gradient = QLinearGradient(200, 
-                            0, self.width()-200, self.height())
-        gradient.setColorAt(0, QColor(255, 163, 77))
-        gradient.setColorAt(1, QColor(255, 222, 100))
-        pal = QPalette()
-        pal.setBrush(QPalette.ColorRole.Window, gradient)
-        self.setPalette(pal)'''
+        oImage = QImage("ressources/FTTS_backv3.png")
+        if oImage.isNull():
+            raise Exception("""You are missing an image ! 
+           Go download 'ressources/FTTS_backv3.png' 
+           from https://github.com/panpanDKC/FTTS""")
 
-        oImage = QImage("img/FTTS_backv3.png")
         sImage = oImage.scaled(QSize(self.wi,self.he))
         pal = QPalette()
         pal.setBrush(QPalette.ColorRole.Window, QBrush(sImage))
@@ -138,7 +135,8 @@ class MainWindow(QWidget):
         self.accu = QLabel(self)
         self.accu.setFont(QFont('Andale Mono',20))
         self.accu.setText('⌖'+str(self.ty_game.accu)+'%')
-        self.accu.setGeometry(550,280,120,70)
+        self.accu.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.accu.setGeometry(540,280,120,70)
 
         #Set the text cursor
         self.cursor = QLabel(self)
@@ -166,18 +164,7 @@ class MainWindow(QWidget):
         
         #Boolean that show if 'SHIFT' is pressed
         self.shiftT = False
-
-        #Load images
-        self.label_logo = QLabel(self)
-        pix_logo = QPixmap('img/ftts_logov2.png')
-        scale_px_logo = pix_logo.scaled(275,
-                            275,
-                            aspectRatioMode=Qt.AspectRatioMode.KeepAspectRatio)
-        self.label_logo.setPixmap(scale_px_logo)
-        self.label_logo.setGeometry(int((self.width()/2)-scale_px_logo.width()/2),
-                               int(self.rect.top() - 40 - scale_px_logo.height()),
-                               scale_px_logo.width(),
-                               scale_px_logo.height())
+        self.ctrlT = False
 
         #Initialise Layout
         vlayout = QVBoxLayout()
@@ -189,7 +176,10 @@ class MainWindow(QWidget):
         k = event.key()
         if k == Qt.Key.Key_Shift:
             self.shiftT = True
-        
+
+        if k == Qt.Key.Key_Control:
+            self.ctrlT = True
+
         #Check if user want to restart game
         if self.shiftT and k == Qt.Key.Key_Return:
             self.w = MainWindow(self.gameMode, self.ListInd)
@@ -199,6 +189,12 @@ class MainWindow(QWidget):
         #Check if user want to change game mode
         if self.shiftT and k == Qt.Key.Key_Backspace:
             self.w = MainWindow(not self.gameMode, 0)
+            self.w.show()
+            self.close()
+
+        if self.shiftT and self.ctrlT and k == 82: #'r' char code
+            self.ty_game.stats.resetStats()
+            self.w = MainWindow(self.gameMode, self.ListInd)
             self.w.show()
             self.close()
 
@@ -269,7 +265,10 @@ class MainWindow(QWidget):
         k = event.key()
         if k == Qt.Key.Key_Shift:
             self.shiftT = False
-   
+        
+        if k == Qt.Key.Key_Control:
+            self.ctrlT = False
+
     #Update stats labels
     def updTime(self):
         self.time.setText(str(self.ty_game.time)+"s")
