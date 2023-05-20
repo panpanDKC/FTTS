@@ -2,10 +2,10 @@ from cryptography.fernet import Fernet
 
 key = b'A2uVpN1aJpTRPKaOa2v4HGVut7qIGoVHrYuuv79W2GY='
 
-def encrypt(data):
+def encrypt(data, name):
     fernet = Fernet(key)
     encrypted_data = fernet.encrypt(data)
-    file = open("stats.enc",'wb')
+    file = open(name,'wb')
     file.write(encrypted_data)
     file.close()
 

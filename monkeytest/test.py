@@ -7,7 +7,7 @@ from PyQt6 import QtQuick
 from colorLet import *
 from game import *
 
-path = "/Users/clerypelvillain/Documents/The Hunger Games(medium).txt"
+path = "Wbank.enc"
 
 styleS = """border-style: solid;
             border-width: 2px;
@@ -56,10 +56,10 @@ class MainWindow(QWidget):
         self.List = QLabel(self)        
         self.List.setFont(QFont('Andale Mono',18))
         self.List.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        self.List.setGeometry(450,560,350,30)
+        self.List.setGeometry(505,560,350,30)
 
         rect_select = QLabel(self)
-        rect_select.setGeometry(565+self.ListInd*43,556,30,30)
+        rect_select.setGeometry(501+self.ListInd*43,556,30,30)
         rect_select.setStyleSheet("""
                                   border-style: solid;
                                   border-width: 2px;
@@ -85,13 +85,13 @@ class MainWindow(QWidget):
         if mode:
             self.ty_game = typeGameNum(path, ListWord[self.ListInd])
             self.chooseGame.setText("You are playing Normal Mode")
-            self.List.setText("How long ? 30  60  100 words")
+            self.List.setText("30  60  100 words")
             if self.ListInd == 2:
-                rect_select.setGeometry(565+self.ListInd*43,556,42,30)
+                rect_select.setGeometry(501+self.ListInd*43,556,42,30)
         else:
             self.ty_game = typeGameTime(path, ListTime[self.ListInd])
             self.chooseGame.setText("You are playing Time Mode")
-            self.List.setText("How long ? 30  60  90 seconds")
+            self.List.setText("30  60  90 seconds")
         
         #Shortcut for game's stats
         self.stats = self.ty_game.stats

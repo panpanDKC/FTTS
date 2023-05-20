@@ -23,7 +23,7 @@ class stats:
             "time_spent": self.time_spent.strftime('%H:%M:%S')
         }
         res = json.dumps(jstats)
-        encrypt(res.encode('utf-8'))
+        encrypt(res.encode('utf-8'),'stats.enc')
 
     def loadStats(self):
         data = decrypt("stats.enc")

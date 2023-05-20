@@ -1,4 +1,6 @@
 import random as rand
+import json
+from crypt import *
 
 #Extract text from file at 'path'
 def GetText(path):
@@ -90,7 +92,7 @@ def getProperMarkov(markov):
         i += 1
 
 def fullFunc(path, n):
-    bank = getBank(path)
+    bank = LoadBank(path) 
     res = genMarkov(n , bank)
     getProperMarkov(res)
     return res
@@ -105,6 +107,20 @@ def getStr(propMark):
 def printRes(l):
     for elm in l:
         print(elm + " ",end='')
+
+def SaveBank(bank, name):
+    res = json.dumps(bank)
+    encrypt(res.encode('utf-8'),name)
+
+def LoadBank(name):
+    data = decrypt(name)
+    res = json.loads(data)
+    return res
+    
+
+#bank = getBank("/Users/clerypelvillain/Documents/The Hunger Games(medium).txt")
+#SaveBank(bank,'Wbank.enc')
+#print(LoadBank('test.json'))
 '''
 bank = getBank("/Users/clerypelvillain/Documents/The Hunger Games(medium).txt")
 test = genMarkov(50,bank)
