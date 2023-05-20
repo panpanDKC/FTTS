@@ -1,7 +1,7 @@
 import sys
 from PyQt6.QtWidgets import  QApplication, QWidget, QLineEdit, QLabel, QPushButton, QHBoxLayout, QVBoxLayout
-from PyQt6.QtGui import QKeySequence, QPalette, QLinearGradient, QColor, QPixmap
-from PyQt6.QtCore import Qt, QTimer, QRectF, QPropertyAnimation, QPoint
+from PyQt6.QtGui import QKeySequence, QPalette, QLinearGradient, QColor, QPixmap, QImage, QBrush
+from PyQt6.QtCore import Qt, QTimer, QRectF, QPropertyAnimation, QPoint, QSize
 from PyQt6.QtGui import *
 from PyQt6 import QtQuick
 from colorLet import *
@@ -11,7 +11,7 @@ path = "/Users/clerypelvillain/Documents/The Hunger Games(medium).txt"
 
 styleS = """border-style: solid;
             border-width: 2px;
-            border-color: #fff0b8;
+            border-color: #fceaa1;
             border-radius: 3px"""
 
 ListWord = [30,60,100]
@@ -28,12 +28,18 @@ class MainWindow(QWidget):
         self.he = 600
         self.setFixedSize(self.wi,self.he)
 
-        gradient = QLinearGradient(200, 
+        '''gradient = QLinearGradient(200, 
                             0, self.width()-200, self.height())
         gradient.setColorAt(0, QColor(255, 163, 77))
         gradient.setColorAt(1, QColor(255, 222, 100))
         pal = QPalette()
         pal.setBrush(QPalette.ColorRole.Window, gradient)
+        self.setPalette(pal)'''
+
+        oImage = QImage("img/FTTS_backv3.png")
+        sImage = oImage.scaled(QSize(self.wi,self.he))
+        pal = QPalette()
+        pal.setBrush(QPalette.ColorRole.Window, QBrush(sImage))
         self.setPalette(pal)
         
         #Initalize game mode bool and mode label
@@ -44,8 +50,8 @@ class MainWindow(QWidget):
         self.gameMode = mode
         self.chooseGame.setStyleSheet("""border-style: solid; 
                                       border-width: 2px; 
-                                      border-color: #fff0b8;
-                                      border-radius: 3px""")
+                                      border-color: #fceaa1;
+                                      border-radius: 3px""")#fff0b8
         self.ListInd = ind
         self.List = QLabel(self)        
         self.List.setFont(QFont('Andale Mono',18))
@@ -57,7 +63,7 @@ class MainWindow(QWidget):
         rect_select.setStyleSheet("""
                                   border-style: solid;
                                   border-width: 2px;
-                                  border-color: #fff0b8;
+                                  border-color: #fceaa1;
                                   border-radius: 3px
                                   """)
 
@@ -113,7 +119,7 @@ class MainWindow(QWidget):
         self.statsT.setStyleSheet(styleS)
                 
         #---- Main text area ----
-        self.rect = QRectF(400,200,500,100)
+        self.rect = QRectF(400,200,500,100)#width: 500
         self.centerRect()
         self.test = ColoredLabel(self.ty_game.rd_textL, self.rect)
         self.test.setText(self.ty_game.currSen)
@@ -163,9 +169,9 @@ class MainWindow(QWidget):
 
         #Load images
         self.label_logo = QLabel(self)
-        pix_logo = QPixmap('img/ftts_logo.png')
-        scale_px_logo = pix_logo.scaled(300,
-                            300,
+        pix_logo = QPixmap('img/ftts_logov2.png')
+        scale_px_logo = pix_logo.scaled(275,
+                            275,
                             aspectRatioMode=Qt.AspectRatioMode.KeepAspectRatio)
         self.label_logo.setPixmap(scale_px_logo)
         self.label_logo.setGeometry(int((self.width()/2)-scale_px_logo.width()/2),
@@ -233,7 +239,7 @@ class MainWindow(QWidget):
             if x >= self.rect.right():
                 self.lastP = x
                 x = int(self.rect.left())+7
-                y += 14
+                y += 15
             
             self.ty_game.updatePtrText(' ')
             self.cursor.move(x+9,y)
@@ -289,7 +295,7 @@ class MainWindow(QWidget):
         
         x,y = (wi/2,hg/2)
         
-        self.rect.moveTo(x-(self.rect.width()/2),
+        self.rect.moveTo(x-(self.rect.width()/2)-22,
                          y-(self.rect.height()/2)+70)
     
     #Make cursor blinking
@@ -301,7 +307,7 @@ def defineColor(topB, midB, var):
     if var >= topB:
         return "<span style='color:rgb(115,255,100)'>"
     elif var >= midB:
-        return "<span style='color:rgb(255,155,100)'>"
+        return "<span style='color:rgb(255,180,140)'>"
     return "<span style='color:rgb(255,88,100)'>"
 
 if __name__ == '__main__':
