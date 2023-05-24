@@ -1,9 +1,9 @@
-from PyQt6.QtWidgets import QApplication, QLabel, QWidget
+from PyQt6.QtWidgets import QLabel
 from PyQt6.QtGui import QPainter, QColor, QFontMetrics, QFont, QTextOption
-from PyQt6.QtCore import Qt, QRectF, QTimer
+from PyQt6.QtCore import Qt, QRectF
 from markov import *
 
-gap = 8
+gap = 10
 
 class ColoredLabel(QLabel):
     #Initialize text with markov generated string and text's rectangle
@@ -19,7 +19,7 @@ class ColoredLabel(QLabel):
 
     def paintEvent(self, event):
         painter = QPainter(self)
-        font = QFont(QFont('Andale Mono',15))
+        font = QFont(QFont('Andale Mono',18))
         font_metrics = QFontMetrics(font)
         option = QTextOption()
         option.setWrapMode(QTextOption.WrapMode.WrapAnywhere)
@@ -30,7 +30,7 @@ class ColoredLabel(QLabel):
         #Print each char independently for color validation
         for i in range(len(self.twri)):
             #Every 10th word we jump to a newline
-            if size-8 >= self.rect.right()-16:
+            if size-gap >= self.rect.right()-16:
                 nl += 1
                 size = self.rect.left()
 
@@ -50,16 +50,12 @@ class ColoredLabel(QLabel):
 
                 #Compute char position
                 char_rect = QRectF(size + (j * gap), 
-                                   self.rect.top()+nl*(gap+6), 
+                                   self.rect.top()+nl*(gap+8), 
                                    gap, 
                                    self.rect.height())
                 painter.drawText(char_rect, ch, option)
-
-                #self.cursor.move(int(size + (j * gap)+7), 
-                                   #int(self.rect.top()+nl*(gap+4)))
-
             #Store word size + space for next char
-            size += (gap*(len(self.twri[i]))+9)
+            size += (gap*(len(self.twri[i]))+gap+1)
 
 
 

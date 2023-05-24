@@ -53,15 +53,15 @@ class typeGame:
             self.currWord = self.currSen[self.r1]
             self.currSen.pop()
             if self.rd_textL[self.r1] == self.currWord:
-                return 9
-            return (len(self.rd_textL[self.r1])-len(self.currWord))*8+9
+                return 11
+            return (len(self.rd_textL[self.r1])-len(self.currWord))*10+11
         elif self.r2 > 0:
             self.r2 -= 1
             if self.currSen[-1][-1]!=self.rd_textL[self.r1][self.r2]:
                 self.wLetter -= 1
             self.currWord = self.currWord[:-1]
             self.currSen[self.r1] = self.currSen[self.r1][:-1]
-        return 8
+        return 10
 
     #Check if word submited is valid or not
     def checkCurr(self):
@@ -106,7 +106,7 @@ class typeGameNum(typeGame):
 #Game class limited by time that inherit from typeGame
 class typeGameTime(typeGame):
     def __init__(self, path, count):
-        super().__init__(path,50)
+        super().__init__(path,130)
         self.setted_time = count
         self.time = count
         self.timer.timeout.connect(self.updateTimer)

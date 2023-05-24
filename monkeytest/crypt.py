@@ -1,5 +1,6 @@
 from cryptography.fernet import Fernet
 from ressources import *
+import cffi
 
 key = b'A2uVpN1aJpTRPKaOa2v4HGVut7qIGoVHrYuuv79W2GY='
 

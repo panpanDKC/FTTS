@@ -14,7 +14,7 @@ def GetWordList(text):
     res = []
     for i in range(len(text)):
         ch = text[i]
-        if ch >= 'a' and ch <= 'z':
+        if (ch >= 'a' and ch <= 'z'):
             tmp += ch
         elif len(tmp)>0:
             res.append(tmp)
@@ -77,17 +77,27 @@ def genMarkov(n, bank):
 #Transform markov generation to a list into a proper list
 #for the usage we have
 def getProperMarkov(markov):
-    i = 1
+    i = 0
     a = markov[0][0].upper()
     markov[0] = a + markov[0][1:]
+
+    if markov[0] in ["Im","Ive","Id"]:
+        b = markov[0][0] + "'"
+        markov[0] = b + markov[0][1:]
+
     while i < len(markov):
         w = markov[i]
         if w in ['.',',']:
             markov[i-1] += w
             markov.pop(i)
             i -= 1
-        elif markov[i-1][-1] == '.':
+        elif i > 0 and markov[i-1][-1] in ['.','?','!']:
             b = w[0].upper()
+            markov[i] = b + w[1:]
+        elif w in ["im","ive","id","i"]:
+            b = w[0].upper()
+            if len(w) > 1:
+                b += "'"
             markov[i] = b + w[1:]
         i += 1
 
@@ -103,11 +113,6 @@ def getStr(propMark):
         res += elm + ' '
     return res
 
-#Debugging function that print a list of words
-def printRes(l):
-    for elm in l:
-        print(elm + " ",end='')
-
 def SaveBank(bank, name):
     res = json.dumps(bank)
     encrypt(res.encode('utf-8'),name)
@@ -116,17 +121,3 @@ def LoadBank(name):
     data = decrypt()
     res = json.loads(data)
     return res
-    
-
-#bank = getBank("/Users/clerypelvillain/Documents/The Hunger Games(medium).txt")
-#SaveBank(bank,'Wbank.enc')
-#print(LoadBank('test.json'))
-'''
-bank = getBank("/Users/clerypelvillain/Documents/The Hunger Games(medium).txt")
-test = genMarkov(50,bank)
-getProperMarkov(test)
-print(test)
-print(getStr(test))
-'''
-
-
